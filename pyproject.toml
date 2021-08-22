@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "getools"
-version = "0.1.1"
+version = "0.1.2"
 description = "Genetics, Evolution and Bioinformatic tools"
 authors = ["russellmyers <flipside@netspace.net.au>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-numpy = "^1.21.2"
-scipy = "^1.7.1"
+numpy = "^1.18.1"
+scipy = "^1.4.1"
 
 
 [tool.poetry.dev-dependencies]
