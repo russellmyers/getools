@@ -1,6 +1,6 @@
 import random
 import time
-from getools.file_utils import read_fasta, string_to_file, read_txt_file, list_to_file, file_to_list
+from getools.utils.file_utils import read_fasta, string_to_file, read_txt_file, list_to_file, file_to_list
 from collections import defaultdict
 import math
 

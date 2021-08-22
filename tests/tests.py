@@ -1,8 +1,7 @@
 import unittest
-from getools.string_utils import BWT, pattern_match_naive, pattern_match_zbox, CountingSort, RadixSort,\
+from getools.utils.string_utils import BWT, pattern_match_naive, pattern_match_zbox, CountingSort, RadixSort,\
      CountingSortExp, CountingSortExpSpecialList, SuffixArray, gen_rand_string, SuffixArrayRankList, RadixSortSpecialList
-from getools.file_utils import file_to_list, read_txt_file, read_fasta
-from getools.align import Sequence, DNASequence, GlobalAligner, ScoringMatrix
+from getools.utils.file_utils import file_to_list, read_txt_file, read_fasta
 from getools.popdist import PopDist, PopDistGen
 from getools.cross import ChromosomeTemplate, GenomeTemplate, Organism
 import random
@@ -98,27 +97,6 @@ class BWTTests(unittest.TestCase):
       _, Z = pattern_match_zbox("ACACACGTACACG", None, also_return_zbox=True)  # X 0 4 0 2 0 0 0 4 0 2 0 0
       self.assertEqual(Z,[-1, 0, 4, 0, 2, 0, 0, 0, 4, 0, 2, 0, 0] )
 
-class AlignTests(unittest.TestCase):
-
-    def test_simple(self):
-
-        seq1 = Sequence('panamabananas')
-        seq2 = Sequence('anamaqqbananas')
-        self.assertTrue(seq1.is_valid())
-        al = GlobalAligner()
-        score = al.align(seq1, seq2)
-        self.assertEqual(score, 9)
-        res = al.backtrack()
-        self.assertCountEqual(res, ['panama--bananas', '-anamaqqbananas'])
-
-        seq1 = DNASequence('AGCTTAGCT')
-        seq2 = DNASequence('ACCGAGCT')
-        self.assertTrue(seq1.is_valid())
-        al = GlobalAligner(scoring_matrix=ScoringMatrix(DNASequence.SIMPLE_SCORING_MATRIX, DNASequence.DNA_ALPHABET))
-        score = al.align(seq1, seq2)
-        self.assertEqual(score, 2)
-        res = al.backtrack()
-        self.assertCountEqual(res,['AGCTTAGCT', 'A-CCGAGCT'] )
 
 class CountingSortTests(unittest.TestCase):
 

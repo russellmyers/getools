@@ -8,7 +8,7 @@ import itertools
 import re
 
 debug = 0
-from getools.gen import SerialiserMixin
+from getools.utils.gen_utils import SerialiserMixin
 from scipy.stats import chisquare
 import random
 
