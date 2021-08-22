@@ -1,3 +1,4 @@
+""" Utilities to read/write text files and fasta files """
 
 def read_fasta(file_name):
     txt = read_txt_file(file_name)
