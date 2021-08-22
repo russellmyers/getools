@@ -1,5 +1,5 @@
 """
-Classes used to define orgnaisms and perform organism crosses
+Classes used to define organisms and perform organism crosses
 """
 
 import random
@@ -14,7 +14,7 @@ import random
 
 class Allele(SerialiserMixin):
     """
-    Represents and individual allele (dominant or recessive - defaults to recessive)
+    Represents an individual allele (dominant or recessive - defaults to recessive)
     """
 
     Dominant = 'D'

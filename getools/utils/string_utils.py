@@ -1,3 +1,5 @@
+""" Various string utilities - fast searching algorithms such as  etc"""
+
 import random
 import time
 from getools.utils.file_utils import read_fasta, string_to_file, read_txt_file, list_to_file, file_to_list
