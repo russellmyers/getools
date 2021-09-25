@@ -2,15 +2,16 @@
 Classes used to define organisms and perform organism crosses
 """
 
-import random
+# import random
 import math
 import itertools
 import re
+from getools.utils.gen_utils import SerialiserMixin
+# from scipy.stats import chisquare
+import random
 
 debug = 0
-from getools.utils.gen_utils import SerialiserMixin
-from scipy.stats import chisquare
-import random
+
 
 class Allele(SerialiserMixin):
     """
@@ -20,7 +21,7 @@ class Allele(SerialiserMixin):
     Dominant = 'D'
     Recessive = 'R'
 
-    def __init__(self,symbol,type='R'):
+    def __init__(self, symbol, type='R'):
         """
         Constructor
 
@@ -42,22 +43,23 @@ class Allele(SerialiserMixin):
 
     @staticmethod
     def _from_attr_dict(attr_dict):
-        obj = Allele(attr_dict['symbol'],attr_dict['type'])
+        obj = Allele(attr_dict['symbol'], attr_dict['type'])
         return obj
+
 
 class AlleleSet(SerialiserMixin):
     """
     Set of alleles which are possible for a gene
     """
-    def __init__(self,alleles):
-        self.alleles= alleles
+    def __init__(self, alleles):
+        self.alleles = alleles
 
     @staticmethod
     def default_alleleset_from_symbol(symbol):
         alleles = []
-        allele = Allele(symbol.upper(),type=Allele.Dominant)
+        allele = Allele(symbol.upper(), type=Allele.Dominant)
         alleles.append(allele)
-        allele = Allele(symbol.lower(),type=Allele.Recessive)
+        allele = Allele(symbol.lower(), type=Allele.Recessive)
         alleles.append(allele)
         return AlleleSet(alleles)
 
@@ -76,13 +78,12 @@ class AlleleSet(SerialiserMixin):
     def __str__(self):
         return '-'.join([str(al) for al in self.alleles])
 
-
-
     @staticmethod
     def _from_attr_dict(attr_dict):
         alleles = [Allele._from_attr_dict(al) for al in attr_dict['alleles']]
         obj = AlleleSet(alleles)
         return obj
+
 
 class Gene(SerialiserMixin):
 
@@ -90,26 +91,27 @@ class Gene(SerialiserMixin):
     Consists of an AlleleSet, a position, a name and an inheritance pattern
     """
 
-    INH_PATTERN_DOMINANT= 'D'
+    INH_PATTERN_DOMINANT = 'D'
     INH_PATTERN_RECESSIVE = 'R'
 
-    def __init__(self,alleleset,position,name = '', inheritance_pattern=INH_PATTERN_RECESSIVE):
+    def __init__(self, alleleset, position, name='', inheritance_pattern=INH_PATTERN_RECESSIVE):
         self.alleleset = alleleset
         self.position = position
         self.name = name
         self.inheritance_pattern = inheritance_pattern
-        #self.recessive = recessive
+        # self.recessive = recessive
 
     def __str__(self):
-        return 'Name: ' + self.name + ' Pos: ' +  str(self.position) + ' Alleles: ' + str(self.alleleset) + ' IP: ' + str(self.inheritance_pattern)
+        return 'Name: ' + self.name + ' Pos: ' + str(self.position) + ' Alleles: ' + str(self.alleleset) +\
+               ' IP: ' + str(self.inheritance_pattern)
 
-    def distance(self,other_gene):
+    def distance(self, other_gene):
         return other_gene.position - self.position
 
     @staticmethod
     def _from_attr_dict(attr_dict):
         alleleset = AlleleSet._from_attr_dict(attr_dict['alleleset'])
-        obj = Gene(alleleset,attr_dict['position'],attr_dict['name'])
+        obj = Gene(alleleset, attr_dict['position'], attr_dict['name'])
         return obj
 
 
@@ -120,14 +122,14 @@ class ChromosomeTemplate(SerialiserMixin):
     (eg Automosomal / X / Y, size, genes associated with the chromosome etc)
     """
 
-    #Class constants
+    # Class constants
     AUTOSOMAL = 'A'
     X = 'X'
     Y = 'Y'
 
-    def __init__(self,name, size, genes_list=None, type=AUTOSOMAL):
+    def __init__(self, name, size, genes_list=None, type=AUTOSOMAL):
         self.name = name
-        self.size  = size
+        self.size = size
         self.type = type
         self.genes = self.add_genes(genes_list)
 
@@ -135,10 +137,10 @@ class ChromosomeTemplate(SerialiserMixin):
     def from_symbol_list(symbol_list, name, size=None, type=None):
         genes = []
         if type is None:
-           type = ChromosomeTemplate.AUTOSOMAL
+            type = ChromosomeTemplate.AUTOSOMAL
         default_position = ChromosomePair.UNLINKED_THRESHOLD
         if size is None:
-           size = (len(symbol_list) + 1) * default_position
+            size = (len(symbol_list) + 1) * default_position
 
         for i, symbol_string in enumerate(symbol_list):
             split = symbol_string.split('-')
@@ -146,28 +148,29 @@ class ChromosomeTemplate(SerialiserMixin):
             inh_pattern = Gene.INH_PATTERN_RECESSIVE
             position = default_position * (i+1)
             if len(split) > 1:
-               inh_pattern = split[1]
+                inh_pattern = split[1]
             if len(split) > 2:
-               position = int(split[2])
-            gene = Gene(AlleleSet.default_alleleset_from_symbol(symbol), position=position, inheritance_pattern=inh_pattern)
+                position = int(split[2])
+            gene = Gene(AlleleSet.default_alleleset_from_symbol(symbol), position=position,
+                        inheritance_pattern=inh_pattern)
             genes.append(gene)
         return ChromosomeTemplate(name, size=size, genes_list=genes, type=type)
 
-
-
-    def add_genes(self,genes_list):
-         return sorted(genes_list,key=lambda x:x.position)
+    # noinspection PyMethodMayBeStatic
+    def add_genes(self, genes_list):
+        return sorted(genes_list, key=lambda x: x.position)
 
     def positions(self):
         return [str(gene.alleleset.alleles[1]) + '-' + str(gene.position) for gene in self.genes]
 
     def __str__(self):
-        return 'ChromosomeTemplate ' + self.name +  '-Type: ' + self.type +  ' Size: ' + str(self.size) + ' Genes: ' + ','.join(['[Gene: ' + str(gene) + ']' for gene in self.genes])
+        return 'ChromosomeTemplate ' + self.name + '-Type: ' + self.type + ' Size: ' + str(self.size)\
+               + ' Genes: ' + ','.join(['[Gene: ' + str(gene) + ']' for gene in self.genes])
 
     @staticmethod
     def _from_attr_dict(attr_dict):
         genes_list = [Gene._from_attr_dict(g) for g in attr_dict['genes']]
-        obj = ChromosomeTemplate(attr_dict['name'],attr_dict['size'],genes_list)
+        obj = ChromosomeTemplate(attr_dict['name'], attr_dict['size'], genes_list)
         return obj
 
     def get_gene_from_symbol(self, symbol):
@@ -175,7 +178,6 @@ class ChromosomeTemplate(SerialiserMixin):
             if symbol in str(gene.alleleset):
                 return gene
         return None
-
 
     def generate_random_chromosome(self):
         actual_alleles = []
@@ -186,24 +188,23 @@ class ChromosomeTemplate(SerialiserMixin):
 
     def generate_complement_chromosome(self, other_chromosome):
         actual_alleles = []
-        for i,gene in enumerate(self.genes):
+        for i, gene in enumerate(self.genes):
             other_allele = other_chromosome.alleles[i]
             other_allele_index = gene.alleleset.alleles.index(other_allele)
             allele_index = 0 if other_allele_index == 1 else 1
             actual_alleles.append(gene.alleleset.alleles[allele_index])
         return Chromosome(self, actual_alleles)
 
-
     def generate_hom_recessive_chromosome(self):
         actual_alleles = []
         for gene in self.genes:
-            actual_alleles.append(gene.alleleset.rec_allele())  #(gene.alleles[-1])
+            actual_alleles.append(gene.alleleset.rec_allele())  # (gene.alleles[-1])
         return Chromosome(self, actual_alleles)
 
     def generate_hom_dominant_chromosome(self):
         actual_alleles = []
         for gene in self.genes:
-            actual_alleles.append(gene.alleleset.dom_allele())  #(gene.alleles[0])
+            actual_alleles.append(gene.alleleset.dom_allele())  # (gene.alleles[0])
         return Chromosome(self, actual_alleles)
 
     def generate_het_chromosome(self):
@@ -212,13 +213,12 @@ class ChromosomeTemplate(SerialiserMixin):
             actual_alleles.append(gene.alleleset.alleles[-1])
         return Chromosome(self, actual_alleles)
 
-    def generate_random_pair(self,ploidy):
+    def generate_random_pair(self, ploidy):
         chrom_pair = []
         for i in range(ploidy):
             chromosome = self.generate_random_chromosome()
             chrom_pair.append(chromosome)
-        return ChromosomePair(self,chrom_pair)
-
+        return ChromosomePair(self, chrom_pair)
 
     def generate_hom_recessive_pair(self, ploidy):
         chrom_pair = []
@@ -242,7 +242,7 @@ class ChromosomeTemplate(SerialiserMixin):
         else:
             chromosome_1 = self.generate_hom_dominant_chromosome()
             chromosome_2 = self.generate_hom_recessive_chromosome()
-        chrom_pair = [chromosome_1,chromosome_2]
+        chrom_pair = [chromosome_1, chromosome_2]
         return ChromosomePair(self, chrom_pair)
 
 
@@ -2747,11 +2747,11 @@ class YGenotypeInferrer(GenotypeInferrer):
             err_msg = self.set_err_msg(0, org)
 
         # Rule 17 Male afflicted / male parent unafflicted or Male unafflicted / male parent afflicted
-        if   (org.sex == Genome.MALE and self.is_afflicted(org) \
-              and  org.has_parents \
+        if   (org.sex == Genome.MALE and self.is_afflicted(org)
+              and  org.has_parents
               and not self.is_afflicted(org.male_parent)) or \
-             (org.sex == Genome.MALE and not self.is_afflicted(org) \
-              and  org.has_parents \
+             (org.sex == Genome.MALE and not self.is_afflicted(org)
+              and  org.has_parents
               and self.is_afflicted(org.male_parent)):
              err_msg = self.set_err_msg(17, org)
 
