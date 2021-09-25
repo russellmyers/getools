@@ -14,3 +14,8 @@
   - gen_utils   
      - general utilities 
      
+     
+### Releases
+  - v0.1.3 Add preliminary Sphinx documentation + minor pep8 tidy-ups
+       
+     
