@@ -617,6 +617,18 @@ class CrossTests(unittest.TestCase):
         self.assertEqual(str(parent_1.children[3].genome), 'AABBcc')
         x = 1
 
+    def test_organism_recomb_fractions(self):
+        gametes = {'ABC': 37, 'ABc': 378, 'AbC': 10, 'Abc': 100, 'aBC': 88, 'aBc': 7, 'abC': 344, 'abc': 36}
+        res = Organism.calc_recombination_fractions(gametes)
+        self.assertEqual(res, {'parentals': ['ABc', 'abC'], 'double_recombinations': ['AbC', 'aBc'],
+                               'parental_ordered': 'BAc', 'parental_ordered_formatted': 'BAc//baC',
+                               'middle_gene': 'A', 'recombination_fractions': [['ab', 0.205, '1.099e-77'],
+                                                                               ['bc', 0.261, '1.276e-51'],
+                                                                               ['ac', 0.09, '3.004e-148']],
+                               'p_values': [1.0987393946617792e-77, 1.2763258342404024e-51, 3.0038475663423886e-148],
+                               'linkages': 'LL', 'phenotypes': {'ABC': 'A+B+C+', 'ABc': 'A+B+c-', 'AbC': 'A+b-C+',
+                                                                'Abc': 'A+b-c-', 'aBC': 'a-B+C+', 'aBc': 'a-B+c-',
+                                                                'abC': 'a-b-C+', 'abc': 'a-b-c-'}})
 
 if __name__ == '__main__':
     unittest.main()

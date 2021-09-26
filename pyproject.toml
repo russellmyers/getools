@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "getools"
-version = "0.1.3"
+version = "0.1.4"
 description = "Genetics, Evolution and Bioinformatic tools"
 authors = ["russellmyers <flipside@netspace.net.au>"]
 

@@ -7,7 +7,7 @@ import math
 import itertools
 import re
 from getools.utils.gen_utils import SerialiserMixin
-# from scipy.stats import chisquare
+from scipy.stats import chisquare
 import random
 
 debug = 0
@@ -2774,7 +2774,6 @@ if __name__ == '__main__':
 
     ret = Pedigree.pedigree_from_text('1M-2F:3F,4MA|3-5MA:6F,7MA,8F')
 
-    from scipy.stats import chisquare
     # obs = [1469, 138, 5]
     # exp = [1467.4, 141.2, 3.4]
     obs = [1489, 108, 15]

@@ -16,6 +16,7 @@
      
      
 ### Releases
+  - v0.1.4 Minor (bug fix re chisq import)
   - v0.1.3 Add preliminary Sphinx documentation + minor pep8 tidy-ups
        
      
